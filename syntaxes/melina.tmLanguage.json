@@ -1,0 +1,62 @@
+{
+	"$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+	"name": "Melina",
+	"patterns": [
+		{
+			"include": "#entities"
+		},
+		{
+			"include": "#storage"
+		},
+		{
+			"include": "#variable"
+		},
+		{
+			"include": "#keywords"
+		},
+		{
+			"include": "#strings"
+		},
+		{
+			"include": "#comments"
+		}
+	],
+	"repository": {
+		"entities": {
+			"patterns": [
+				{
+					"name":"entity.name.function",
+					"match": "\\b(tap|verify|scrollUp|scrollDown)\\b"
+				},
+				{
+					"name":"entity.name.type",
+					"match": "\\b(button|text|searchField)\\b"
+				}
+			]
+		},
+		"storage": {
+			"name":"storage.type",
+			"match": "\\b(suite|arguments|scenario)\\b"
+		},
+		"variable": {
+			"name":"variable.parameter",
+			"match": "\\b(name|go)\\b"
+		},
+		"keywords": {
+			"patterns": [{
+				"name": "keyword.control.melina",
+				"match": "\\b(end)\\b"
+			}]
+		},
+		"strings": {
+			"name": "string.quoted.double.melina",
+			"begin": "\"",
+			"end": "\""
+		},
+		"comments": {
+			"name":"comment.line.double-slash",
+			"match": "//.+"
+		}
+	},
+	"scopeName": "source.melina"
+}

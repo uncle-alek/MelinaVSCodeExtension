@@ -1,0 +1,34 @@
+{
+  "name": "melina-lang",
+  "displayName": "Melina Lang",
+  "description": "Extension for Melina language",
+  "version": "0.0.1",
+  "main": "./extension.js",
+  "engines": {
+    "vscode": "^1.83.0"
+  },
+  "categories": [
+    "Programming Languages"
+  ],
+  "contributes": {
+    "languages": [{
+      "id": "melina",
+      "aliases": ["Melina", "melina"],
+      "extensions": [".melina"],
+      "configuration": "./language-configuration.json"
+    }],
+    "grammars": [{
+      "language": "melina",
+      "scopeName": "source.melina",
+      "path": "./syntaxes/melina.tmLanguage.json"
+    }],
+    "keybindings": [
+      {
+          "command": "extension.melinaStatusBarAction",
+          "mac": "cmd+r",
+          "when": "editorTextFocus",
+          "title": "Run test"
+      }
+  ]
+  }
+}
