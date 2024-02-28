@@ -6,7 +6,7 @@ class XCTestPlan {
       this.testPlanFilePath = testPlanFilePath;
     }
   
-    async updateConfigurationWith(compiledFilePath) {
+    async updateConfiguration(compiledFilePath) {
         const jsonString = await fs.promises.readFile(this.testPlanFilePath, 'utf8');
         const obj = JSON.parse(jsonString);
         obj.configurations.forEach(config => {
