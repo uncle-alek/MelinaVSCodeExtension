@@ -3,7 +3,7 @@ const vscode = require('vscode');
 
 class FileManager {
 
-    pathToMelina = '/Users/ayakimenko/Library/Developer/Xcode/DerivedData/Melina-gujzuyepzrnbjubvknfeprmfuzmi/Build/Products/Debug/Melina'
+    pathToMelina = path.join(__dirname, 'bin', 'Melina')
     projectFolder = '/Users/ayakimenko/Documents/Projects/Swift/MelinaTestMachine/MelinaTestMachine/'
     testPlanFilePath = this.projectFolder + 'MelinaTestMachine.xctestplan'
     projectFilePath =  this.projectFolder + 'MelinaTestMachine.xcodeproj'
