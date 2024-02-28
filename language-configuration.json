@@ -5,19 +5,16 @@
     },
     // symbols used as brackets
     "brackets": [
-        [":", "end"],
-        ["[", "]"]
+        [":", "end"]
     ],
     // symbols that are auto closed when typing
     "autoClosingPairs": [
         [":", "end"],
-        ["[", "]"],
         ["\"", "\""]
     ],
     // symbols that can be used to surround a selection
     "surroundingPairs": [
         [":", "end"],
-        ["[", "]"],
         ["\"", "\""]
     ]
 }
