@@ -6,8 +6,20 @@ class MelinaCompiler {
     this.pathToMelina = pathToMelina;
   }
 
-  async compileFileWith(filePath, compiledFilePath) {
-    return await exec(`${this.pathToMelina} -p ${filePath} -o ${compiledFilePath}`)
+  async compileSwift(filePath, outputPath = null) {
+    return await this.compile(filePath, `swift`, outputPath)
+  }
+
+  async compileSwiftTeCode(filePath, outputPath = null) {
+    return await this.compile(filePath, `swiftTeCode`, outputPath)
+  }
+
+  async compile(filePath, language, outputPath) {
+    let command = `${this.pathToMelina} -p ${filePath} -l ${language}`
+    if (outputPath != null) {
+      command += ` -o ${outputPath}`
+    }
+    return await exec(command);
   }
 }
 

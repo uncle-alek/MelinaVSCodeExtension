@@ -1,10 +1,5 @@
 const vscode = require('vscode');
-const FileManager = require('./FileManager.js');
-const MelinaCompiler = require('./MelinaCompiler.js');
-const XCTestPlan = require('./XCTestPlan.js');
-const XCodeBuild = require('./XCodeBuild.js');
-
-let fm = new FileManager()
+const BuildController = require('./BuildController.js');
 
 let hoverDisposable = vscode.languages.registerHoverProvider('melina',
     {
@@ -75,15 +70,15 @@ let completionDisposable = vscode.languages.registerCompletionItemProvider({ sch
 
 let statusBarCommand = 'extension.melinaStatusBarAction';
 let statusBarDisposable = vscode.commands.registerCommand(statusBarCommand, async function () {
-    try {
-        const { stdout, stderr } = await new MelinaCompiler(fm.pathToMelina).compileFileWith(fm.currentFilePath(), fm.compiledFilePath())
-        vscode.window.showInformationMessage('Build success');
-        await new XCTestPlan(fm.testPlanFilePath).updateConfigurationWith(fm.compiledFilePath())
-        new XCodeBuild(fm.projectFilePath).test()
-        vscode.window.showInformationMessage('Running UITests');
-    } catch (error) {
-        console.error('Error occured:', error);
-    }
+    let buildController = new BuildController();
+
+    buildController.run((error, message) => {
+        if (error) {
+            vscode.window.showErrorMessage(error.message);
+        } else {
+            vscode.window.showInformationMessage(message);
+        }
+    });
 });
 
 function activate(context) {
