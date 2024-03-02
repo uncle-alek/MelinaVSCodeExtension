@@ -68,15 +68,18 @@ let completionDisposable = vscode.languages.registerCompletionItemProvider({ sch
     }
 );
 
+let output = vscode.window.createOutputChannel("Melina compiler");
 let statusBarCommand = 'extension.melinaStatusBarAction';
 let statusBarDisposable = vscode.commands.registerCommand(statusBarCommand, async function () {
     let buildController = new BuildController();
 
     buildController.run((error, message) => {
         if (error) {
-            vscode.window.showErrorMessage(error.message);
+            output.show()
+            output.append(error);
         } else {
-            vscode.window.showInformationMessage(message);
+            output.show()
+            output.append(message);
         }
     });
 });
