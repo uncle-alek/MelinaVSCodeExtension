@@ -1,5 +1,18 @@
 const vscode = require('vscode');
 const BuildController = require('./BuildController.js');
+const CodeFormatter = require('./CodeFormatter.js');
+
+let formatCodeDisposable = vscode.commands.registerCommand('extension.formatCode', function () {
+    const editor = vscode.window.activeTextEditor;
+    const document = editor.document;
+    const unformattedCode = document.getText();
+    const fullRange = new vscode.Range(document.positionAt(0), document.positionAt(unformattedCode.length));
+
+    let formattedCode = new CodeFormatter().format(unformattedCode)
+    const edit = new vscode.WorkspaceEdit();
+    edit.replace(document.uri, fullRange, formattedCode);
+    vscode.workspace.applyEdit(edit);
+});
 
 let hoverDisposable = vscode.languages.registerHoverProvider('melina',
     {
@@ -69,31 +82,57 @@ let completionDisposable = vscode.languages.registerCompletionItemProvider({ sch
 );
 
 let output = vscode.window.createOutputChannel("Melina compiler");
-let statusBarCommand = 'extension.melinaStatusBarAction';
-let statusBarDisposable = vscode.commands.registerCommand(statusBarCommand, async function () {
+
+let generateCommand = 'extension.generate';
+let generateDisposable = vscode.commands.registerCommand(generateCommand, async function () {
+    let buildController = new BuildController();
+
+    buildController.generate((error, message) => {
+        output.show()
+
+        if (error) {
+            output.append(error);
+        } else {
+            output.append(message);
+        }
+        vscode.window.showTextDocument(vscode.window.activeTextEditor.document, { selection: vscode.window.activeTextEditor.selection });
+    })
+});
+
+let runCommand = 'extension.run';
+let runDisposable = vscode.commands.registerCommand(runCommand, async function () {
     let buildController = new BuildController();
 
     buildController.run((error, message) => {
+        output.show()
+
         if (error) {
-            output.show()
             output.append(error);
         } else {
-            output.show()
             output.append(message);
         }
-    });
+        vscode.window.showTextDocument(vscode.window.activeTextEditor.document, { selection: vscode.window.activeTextEditor.selection });
+    })
 });
 
 function activate(context) {
-    let statusBar = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right, 100);
-    statusBar.command = statusBarCommand;
-    statusBar.text = `$(play)`;
-    statusBar.tooltip = 'Run test';
-    statusBar.show();
+    let generateItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right, 100);
+    generateItem.command = runCommand;
+    generateItem.text = `$(file-code)`;
+    generateItem.tooltip = 'Generate test';
+    generateItem.show();
+
+    let runItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right, 100);
+    runItem.command = runCommand;
+    runItem.text = `$(play)`;
+    runItem.tooltip = 'Run test';
+    runItem.show();
 
     context.subscriptions.push(hoverDisposable)
     context.subscriptions.push(completionDisposable)
-    context.subscriptions.push(statusBarDisposable)
+    context.subscriptions.push(runDisposable)
+    context.subscriptions.push(generateDisposable)
+    context.subscriptions.push(formatCodeDisposable);
 }
 
 function deactivate() {
