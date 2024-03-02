@@ -1,6 +1,39 @@
 const vscode = require('vscode');
 const BuildController = require('./BuildController.js');
 
+let alignCodeDisposable = vscode.commands.registerCommand('extension.alignCode', function () {
+    const editor = vscode.window.activeTextEditor;
+    if (!editor) {
+        return;
+    }
+
+    const document = editor.document;
+    const selection = editor.selection;
+
+    // Perform the alignment here using your custom logic
+    alignCode(editor, document, selection);
+});
+
+function alignCode(editor, document, selection) {
+    // Implement your alignment logic
+    // For instance, identify key characters like '=', ':', or '=>',
+    // and add or remove spaces to/from lines to align them accordingly.
+
+    // You might need to use regular expressions to identify
+    // the points to align and calculate the necessary spaces.
+    // Then create a new vscode.WorkspaceEdit to apply the changes.
+
+    console.debug(selection)
+
+    const edit = new vscode.WorkspaceEdit();
+    // This is a demostration line to set a replace operation
+    // Replace with your actual code to adjust alignment
+    edit.replace(document.uri, new vscode.Range(0, 0, document.lineCount, 0), alignedText);
+
+    // Apply the WorkspaceEdit to the document
+    return vscode.workspace.applyEdit(edit);
+}
+
 let hoverDisposable = vscode.languages.registerHoverProvider('melina',
     {
         provideHover(document, position, token) {
@@ -69,31 +102,57 @@ let completionDisposable = vscode.languages.registerCompletionItemProvider({ sch
 );
 
 let output = vscode.window.createOutputChannel("Melina compiler");
-let statusBarCommand = 'extension.melinaStatusBarAction';
-let statusBarDisposable = vscode.commands.registerCommand(statusBarCommand, async function () {
+
+let generateCommand = 'extension.generate';
+let generateDisposable = vscode.commands.registerCommand(generateCommand, async function () {
+    let buildController = new BuildController();
+
+    buildController.generate((error, message) => {
+        output.show()
+
+        if (error) {
+            output.append(error);
+        } else {
+            output.append(message);
+        }
+        vscode.window.showTextDocument(vscode.window.activeTextEditor.document, { selection: vscode.window.activeTextEditor.selection });
+    })
+});
+
+let runCommand = 'extension.run';
+let runDisposable = vscode.commands.registerCommand(runCommand, async function () {
     let buildController = new BuildController();
 
     buildController.run((error, message) => {
+        output.show()
+
         if (error) {
-            output.show()
             output.append(error);
         } else {
-            output.show()
             output.append(message);
         }
-    });
+        vscode.window.showTextDocument(vscode.window.activeTextEditor.document, { selection: vscode.window.activeTextEditor.selection });
+    })
 });
 
 function activate(context) {
-    let statusBar = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right, 100);
-    statusBar.command = statusBarCommand;
-    statusBar.text = `$(play)`;
-    statusBar.tooltip = 'Run test';
-    statusBar.show();
+    let generateItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right, 100);
+    generateItem.command = runCommand;
+    generateItem.text = `$(file-code)`;
+    generateItem.tooltip = 'Generate test';
+    generateItem.show();
+
+    let runItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right, 100);
+    runItem.command = runCommand;
+    runItem.text = `$(play)`;
+    runItem.tooltip = 'Run test';
+    runItem.show();
 
     context.subscriptions.push(hoverDisposable)
     context.subscriptions.push(completionDisposable)
-    context.subscriptions.push(statusBarDisposable)
+    context.subscriptions.push(runDisposable)
+    context.subscriptions.push(generateDisposable)
+    context.subscriptions.push(alignCodeDisposable);
 }
 
 function deactivate() {

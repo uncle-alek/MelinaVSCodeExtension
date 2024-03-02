@@ -27,13 +27,23 @@
       "scopeName": "source.melina",
       "path": "./syntaxes/melina.tmLanguage.json"
     }],
-    "keybindings": [
-      {
-          "command": "extension.melinaStatusBarAction",
+    "keybindings": [{
+          "command": "extension.run",
           "mac": "cmd+r",
           "when": "editorTextFocus",
           "title": "Run test"
-      }
-  ]
+      },
+      {
+        "command": "extension.generate",
+        "mac": "cmd+g",
+        "when": "editorTextFocus",
+        "title": "Generate test"
+      },
+      {
+        "command": "extension.alignCode",
+        "mac": "cmd+f",
+        "when": "editorTextFocus",
+        "title": "Align Code"
+    }]
   }
 }
