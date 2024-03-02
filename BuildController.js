@@ -3,8 +3,6 @@ const MelinaCompiler = require('./MelinaCompiler.js');
 const XCTestPlan = require('./XCTestPlan.js');
 const XCodeBuild = require('./XCodeBuild.js');
 
-const fs = require('fs').promises;
-
 class BuildController {
 
     fm = new FileManager()

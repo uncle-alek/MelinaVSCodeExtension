@@ -40,7 +40,7 @@
         "title": "Generate test"
       },
       {
-        "command": "extension.alignCode",
+        "command": "extension.formatCode",
         "mac": "cmd+f",
         "when": "editorTextFocus",
         "title": "Align Code"

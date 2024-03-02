@@ -1,38 +1,18 @@
 const vscode = require('vscode');
 const BuildController = require('./BuildController.js');
+const CodeFormatter = require('./CodeFormatter.js');
 
-let alignCodeDisposable = vscode.commands.registerCommand('extension.alignCode', function () {
+let formatCodeDisposable = vscode.commands.registerCommand('extension.formatCode', function () {
     const editor = vscode.window.activeTextEditor;
-    if (!editor) {
-        return;
-    }
-
     const document = editor.document;
-    const selection = editor.selection;
+    const unformattedCode = document.getText();
+    const fullRange = new vscode.Range(document.positionAt(0), document.positionAt(unformattedCode.length));
 
-    // Perform the alignment here using your custom logic
-    alignCode(editor, document, selection);
-});
-
-function alignCode(editor, document, selection) {
-    // Implement your alignment logic
-    // For instance, identify key characters like '=', ':', or '=>',
-    // and add or remove spaces to/from lines to align them accordingly.
-
-    // You might need to use regular expressions to identify
-    // the points to align and calculate the necessary spaces.
-    // Then create a new vscode.WorkspaceEdit to apply the changes.
-
-    console.debug(selection)
-
+    let formattedCode = new CodeFormatter().format(unformattedCode)
     const edit = new vscode.WorkspaceEdit();
-    // This is a demostration line to set a replace operation
-    // Replace with your actual code to adjust alignment
-    edit.replace(document.uri, new vscode.Range(0, 0, document.lineCount, 0), alignedText);
-
-    // Apply the WorkspaceEdit to the document
-    return vscode.workspace.applyEdit(edit);
-}
+    edit.replace(document.uri, fullRange, formattedCode);
+    vscode.workspace.applyEdit(edit);
+});
 
 let hoverDisposable = vscode.languages.registerHoverProvider('melina',
     {
@@ -152,7 +132,7 @@ function activate(context) {
     context.subscriptions.push(completionDisposable)
     context.subscriptions.push(runDisposable)
     context.subscriptions.push(generateDisposable)
-    context.subscriptions.push(alignCodeDisposable);
+    context.subscriptions.push(formatCodeDisposable);
 }
 
 function deactivate() {
