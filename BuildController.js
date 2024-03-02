@@ -37,7 +37,6 @@ class BuildController {
             // new XCodeBuild(this.fm.projectFilePath).test();
             // completion(null, 'Running UITests');
         } catch (error) {
-            console.error('Error occured:', error);
             completion(error, null);
         }
     }
