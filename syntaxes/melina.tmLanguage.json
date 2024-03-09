@@ -9,9 +9,6 @@
             "include": "#storage"
         },
         {
-            "include": "#variable"
-        },
-        {
             "include": "#keyword"
         },
         {
@@ -26,7 +23,7 @@
             "patterns": [
                 {
                     "name": "entity.name.function.melina",
-                    "match": "\\b(tap|verify|edit)\\b"
+                    "match": "\\b(tap|verify|edit|file)\\b"
                 },
                 {
                     "name": "entity.name.type.melina",
@@ -42,7 +39,7 @@
             "patterns": [
                 {
                     "name": "storage.type.melina",
-                    "match": "\\b(suite|scenario|subscenario)\\b"
+                    "match": "\\b(suite|scenario|subscenario|json)\\b"
                 },
                 {
                     "name": "storage.modifier.parameter.melina",
@@ -50,24 +47,12 @@
                 }
             ]
         },
-        "variable": {
-            "patterns": [
-                {
-                    "name": "variable.parameter.melina",
-                    "match": "\\bto\\b"
-                }
-            ]
-        },
         "keyword": {
-            "patterns": [
-                {
-                    "name": "keyword.control.melina",
-                    "match": "\\b(end)\\b"
-                }
-            ]
+            "name": "keyword.control.melina",
+            "match": "\\b(to)\\b"
         },
 		"string": {
-            "name": "string.quoted.double.melina",
+            "name": "string.quoted.single.melina",
             "begin": "\"",
             "end": "\""
         },

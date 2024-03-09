@@ -71,11 +71,13 @@ let completionDisposable = vscode.languages.registerCompletionItemProvider({ sch
             const isExist = new vscode.CompletionItem('is exist', vscode.CompletionItemKind.Keyword);
             const containsValue = new vscode.CompletionItem('contains value', vscode.CompletionItemKind.Keyword);
             const withText = new vscode.CompletionItem('with text', vscode.CompletionItemKind.Keyword);
+            const json = new vscode.CompletionItem('json', vscode.CompletionItemKind.Keyword);
+            const file = new vscode.CompletionItem('file', vscode.CompletionItemKind.Keyword);
 
             return [
                 suite, scenario, subscenario, arguments, end, to, verify, tap, edit,
                 button, view, textfield, label, isNotSelected, isSelected,
-                isNotExist, isExist, containsValue, withText
+                isNotExist, isExist, containsValue, withText, json, file
             ];
         }
     }

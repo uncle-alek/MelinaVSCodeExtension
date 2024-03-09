@@ -41,7 +41,7 @@
       },
       {
         "command": "extension.formatCode",
-        "mac": "cmd+f",
+        "mac": "cmd+i",
         "when": "editorTextFocus",
         "title": "Align Code"
     }]

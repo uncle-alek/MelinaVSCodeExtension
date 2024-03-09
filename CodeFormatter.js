@@ -28,7 +28,7 @@ class CodeFormatter {
     formattedLine(line) {
         const trimmedLine = line.trimStart();
         const prefix = ' '.repeat(this.scopeLevel * this.indentation);
-        this.formattedCode +=prefix + trimmedLine + '\n'; 
+        this.formattedCode += prefix + trimmedLine + '\n'; 
     }
 }
 
