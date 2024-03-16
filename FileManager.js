@@ -1,15 +1,27 @@
 const path = require('path');
 const vscode = require('vscode');
 
+let _currentFilePath = '';
+updateCurrentFilePath(vscode.window.activeTextEditor.document);
+vscode.workspace.onDidOpenTextDocument(updateCurrentFilePath);
+
+function updateCurrentFilePath(document) {
+    if(document.uri.fsPath.endsWith('.melina')) {
+        _currentFilePath = document.uri.fsPath;
+    }
+}
+
 class FileManager {
 
-    pathToMelina = path.join(__dirname, 'bin', 'Melina')
-    projectFolder = '/Users/ayakimenko/Documents/Projects/Swift/MelinaTestMachine/MelinaTestMachine/'
-    testPlanFilePath = this.projectFolder + 'MelinaTestMachine.xctestplan'
-    projectFilePath =  this.projectFolder + 'MelinaTestMachine.xcodeproj'
+    constructor() {
+        this.projectFolder = '/Users/ayakimenko/Documents/Projects/Swift/MelinaTestMachine/MelinaTestMachine/';
+        this.testPlanFilePath = this.projectFolder + 'MelinaTestMachine.xctestplan';
+        this.projectFilePath =  this.projectFolder + 'MelinaTestMachine.xcodeproj';
+        this.pathToMelina = path.join(__dirname, 'bin', 'Melina')
+    }
 
     currentFilePath() {
-        return new URL(vscode.window.activeTextEditor.document.uri).pathname;
+        return _currentFilePath;
     }
 
     compiledFilePath() {
