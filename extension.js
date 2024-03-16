@@ -84,6 +84,7 @@ let completionDisposable = vscode.languages.registerCompletionItemProvider({ sch
 );
 
 let output = vscode.window.createOutputChannel("Melina compiler");
+
 let generateCommand = 'extension.generate';
 let generateDisposable = vscode.commands.registerCommand(generateCommand, async function () {
     let buildController = new BuildController();
@@ -103,16 +104,15 @@ let runCommand = 'extension.run';
 let runDisposable = vscode.commands.registerCommand(runCommand, async function () {
     let buildController = new BuildController();
 
-    buildController.run((error, message) => {
-        output.show()
-
-        if (error) {
+    buildController.run()
+        .then(result => {
+            output.show()
+            output.append(result);
+        })
+        .catch(error => {
+            output.show()
             output.append(error);
-        } else {
-            output.append(message);
-        }
-        vscode.window.showTextDocument(vscode.window.activeTextEditor.document, { selection: vscode.window.activeTextEditor.selection });
-    })
+        });
 });
 
 function activate(context) {

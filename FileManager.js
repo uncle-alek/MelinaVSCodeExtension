@@ -3,7 +3,9 @@ const vscode = require('vscode');
 
 let _currentFilePath = '';
 updateCurrentFilePath(vscode.window.activeTextEditor.document);
-vscode.workspace.onDidOpenTextDocument(updateCurrentFilePath);
+vscode.window.onDidChangeActiveTextEditor(editor => {
+    updateCurrentFilePath(editor.document);
+});
 
 function updateCurrentFilePath(document) {
     if(document.uri.fsPath.endsWith('.melina')) {
