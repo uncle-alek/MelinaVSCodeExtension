@@ -26,11 +26,15 @@ class CodeFormatter {
     }
 
     isScopeStart(line) {
-        return !!line.trim().match( /^(?!.*\/\/)([^"']*("[^"']*"[^"']*)*):(?![^"]*")\s*$/);
+        return !!line.trim().match(this.scopeRegex(':'));
     }
 
     isScopeEnd(line) {
-        return !!line.trim().match( /^(?!.*\/\/)([^"']*("[^"']*"[^"']*)*)end(?![^"]*")\s*$/);
+        return !!line.trim().match(this.scopeRegex('end'));
+    }
+
+    scopeRegex(keyword) {
+        return new RegExp(`^(?!.*\/\/)([^"']*("[^"']*"[^"']*)*)${keyword}(?![^"]*")\\s*$`);
     }
 
     formattedLine(line) {
