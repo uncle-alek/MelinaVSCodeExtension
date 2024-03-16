@@ -89,46 +89,44 @@ let generateCommand = 'extension.generate';
 let generateDisposable = vscode.commands.registerCommand(generateCommand, async function () {
     let buildController = new BuildController();
 
-    buildController.generate((error, message) => {
-        output.show()
-
-        if (error) {
+    buildController.generate()
+        .then(result => {
+            output.show()
+            output.append(result);
+        })
+        .catch(error => {
+            output.show()
             output.append(error);
-        } else {
-            output.append(message);
-        }
-        vscode.window.showTextDocument(vscode.window.activeTextEditor.document, { selection: vscode.window.activeTextEditor.selection });
-    })
+        });
 });
 
 let runCommand = 'extension.run';
 let runDisposable = vscode.commands.registerCommand(runCommand, async function () {
     let buildController = new BuildController();
 
-    buildController.run((error, message) => {
-        output.show()
-
-        if (error) {
+    buildController.run()
+        .then(result => {
+            output.show()
+            output.append(result);
+        })
+        .catch(error => {
+            output.show()
             output.append(error);
-        } else {
-            output.append(message);
-        }
-        vscode.window.showTextDocument(vscode.window.activeTextEditor.document, { selection: vscode.window.activeTextEditor.selection });
-    })
+        });
 });
 
 function activate(context) {
     let generateItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right, 100);
-    generateItem.command = runCommand;
+    generateItem.command = generateCommand;
     generateItem.text = `$(file-code)`;
     generateItem.tooltip = 'Generate test';
     generateItem.show();
 
-    let runItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right, 100);
-    runItem.command = runCommand;
-    runItem.text = `$(play)`;
-    runItem.tooltip = 'Run test';
-    runItem.show();
+    // let runItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right, 100);
+    // runItem.command = runCommand;
+    // runItem.text = `$(play)`;
+    // runItem.tooltip = 'Run test';
+    // runItem.show();
 
     context.subscriptions.push(hoverDisposable)
     context.subscriptions.push(completionDisposable)
