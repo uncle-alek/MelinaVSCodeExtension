@@ -1,6 +1,6 @@
 class CodeFormatter {
 
-    indentation = 2
+    indentation = 2;
 
     constructor() {
         this.scopeLevel = 0;
@@ -11,24 +11,31 @@ class CodeFormatter {
         const lines = code.split("\n");
 
         lines.forEach(line => {
-            if (line.includes(':') && !line.includes('//')) {
-                this.formattedLine(line)
+            if (this.isScopeEnd(line)) {
+                this.scopeLevel = Math.max(this.scopeLevel - 1, 0);
+            }
+
+            this.formattedLine(line);
+
+            if (this.isScopeStart(line)) {
                 this.scopeLevel++;
-            } else if (line.includes('end') && !line.includes('//')) {
-                this.scopeLevel--;
-                this.formattedLine(line)
-            } else {
-                this.formattedLine(line)
             }
         });
 
-        return this.formattedCode;
+        return this.formattedCode.trim();
+    }
+
+    isScopeStart(line) {
+        return !!line.trim().match( /^(?!.*\/\/)([^"']*("[^"']*"[^"']*)*):(?![^"]*")\s*$/);
+    }
+
+    isScopeEnd(line) {
+        return !!line.trim().match( /^(?!.*\/\/)([^"']*("[^"']*"[^"']*)*)end(?![^"]*")\s*$/);
     }
 
     formattedLine(line) {
-        const trimmedLine = line.trimStart();
         const prefix = ' '.repeat(this.scopeLevel * this.indentation);
-        this.formattedCode += prefix + trimmedLine + '\n'; 
+        this.formattedCode += prefix + line.trimStart() + '\n';
     }
 }
 
