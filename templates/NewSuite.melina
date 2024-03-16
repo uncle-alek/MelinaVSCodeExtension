@@ -1,0 +1,39 @@
+// Define a test suite with a given name. This suite will encompass various test scenarios.
+suite "YourSuiteNameHere":
+
+  // Define a scenario with a unique identifier. Each scenario represents a test case with steps to execute.
+  scenario "YourScenarioName1":
+
+    // Optionally define arguments for the scenario. Arguments can be simple key-value pairs or references to JSON objects.
+    arguments:
+      // An argument maps a string identifier to a value, used within the scenario.
+      "ArgumentName1" to "ArgumentValue1"
+      // A JSON reference points to a JSON object key defined in another part of the template.
+      "ArgumentName2" to json "JsonKeyName1"
+    end
+
+    // Define the steps for the scenario. Steps dictate the actions and checks to be performed.
+    // Assert the condition of an element being not selected on the screen.
+    verify view "ViewName1" is not selected
+    // Simulate the action of tapping a button.
+    tap button "ButtonName1"
+    // Input text into a text field element within the scenario.
+    edit textfield "TextFieldName1" with text "SomeText"
+    // Include a previously defined subscenario within the current scenario.
+    subscenario "YourSubScenarioName1"
+  end
+end
+
+// Define a subscenario that provides a reusable set of steps that can be included within scenarios.
+subscenario "YourSubScenarioName1":
+
+  // Define subscenario steps.
+  // Verify if the button with the given identifier is selected, as part of subscenario actions.
+  verify button "ButtonName1" is selected
+end
+
+// Define a JSON object with a key and associates it with a file path.
+json "JsonKey1Name":
+  // Provide the file path to the JSON file to be used in the scenario or subscenario.
+  file "PathToFile1.json"
+end

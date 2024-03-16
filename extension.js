@@ -1,6 +1,7 @@
 const vscode = require('vscode');
 const BuildController = require('./BuildController.js');
 const CodeFormatter = require('./CodeFormatter.js');
+const FileManager = require('./FileManager.js');
 
 let formatCodeDisposable = vscode.commands.registerCommand('extension.formatCode', function () {
     const editor = vscode.window.activeTextEditor;
@@ -115,6 +116,20 @@ let runDisposable = vscode.commands.registerCommand(runCommand, async function (
         });
 });
 
+let templateCommand = 'extension.template';
+let templateDisposable = vscode.commands.registerCommand(templateCommand, async function () {
+    let fm = new FileManager()
+    fm.createTemplateFile((error, filePath) => {
+        if (error) {
+            vscode.window.showInformationMessage(error.message);
+        } else {
+            vscode.workspace.openTextDocument(filePath).then((doc) => {
+                vscode.window.showTextDocument(doc);
+            });
+        }
+    })
+});
+
 function activate(context) {
     let generateItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right, 100);
     generateItem.command = generateCommand;
@@ -128,11 +143,18 @@ function activate(context) {
     // runItem.tooltip = 'Run test';
     // runItem.show();
 
+    let templateItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right, 100);
+    templateItem.command = templateCommand;
+    templateItem.text = `$(file-add)`;
+    templateItem.tooltip = 'Create template';
+    templateItem.show();
+
     context.subscriptions.push(hoverDisposable)
     context.subscriptions.push(completionDisposable)
     context.subscriptions.push(runDisposable)
     context.subscriptions.push(generateDisposable)
-    context.subscriptions.push(formatCodeDisposable);
+    context.subscriptions.push(templateDisposable)
+    context.subscriptions.push(formatCodeDisposable)
 }
 
 function deactivate() {

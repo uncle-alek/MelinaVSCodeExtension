@@ -1,4 +1,5 @@
 const path = require('path');
+const fs = require('fs');
 const vscode = require('vscode');
 
 let _currentFilePath = '';
@@ -20,6 +21,7 @@ class FileManager {
         this.testPlanFilePath = this.projectFolder + 'MelinaTestMachine.xctestplan';
         this.projectFilePath =  this.projectFolder + 'MelinaTestMachine.xcodeproj';
         this.pathToMelina = path.join(__dirname, 'bin', 'Melina')
+        this.pathToTemplate = path.join(__dirname, 'templates', 'NewSuite.melina')
     }
 
     currentFilePath() {
@@ -34,6 +36,30 @@ class FileManager {
             ext: ".tecode.json"
         });
         return newPath
+    }
+
+    createTemplateFile(completion) {
+        let editor = vscode.window.activeTextEditor;
+        let currentFileDir = path.dirname(editor.document.uri.fsPath);
+        let newFilePath = path.join(currentFileDir, 'NewSuite.melina');
+        if (fs.existsSync(newFilePath)) {
+            console.debug('already exists')
+            completion(new Error('File `NewSuite.melina` already exists'), null)
+        } else {
+            fs.readFile(this.pathToTemplate, 'utf8', (readError, data) => {
+                if (readError) {
+                    completion(readError, null);
+                } else {
+                    fs.writeFile(newFilePath, data, (writeError) => {
+                        if (writeError) {
+                            completion(writeError, null);
+                        } else {
+                            completion(null, newFilePath);
+                        }
+                    });
+                }
+            });
+        }
     }
 }
 

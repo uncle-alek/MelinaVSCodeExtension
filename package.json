@@ -40,6 +40,12 @@
         "title": "Generate test"
       },
       {
+        "command": "extension.template",
+        "mac": "cmd+t",
+        "when": "editorTextFocus",
+        "title": "Create template"
+      },
+      {
         "command": "extension.formatCode",
         "mac": "cmd+i",
         "when": "editorTextFocus",
