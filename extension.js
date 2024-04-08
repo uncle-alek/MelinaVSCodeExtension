@@ -21,7 +21,7 @@ let hoverDisposable = vscode.languages.registerHoverProvider('melina',
             const definitionPattern = /(suite|subscenario)\s+"([^"]+)":|scenario\s+"([^"]+)":/;
             const argumentPattern = /"([^"]+)"\s+to\s+"([^"]+)"/;
             const actionPattern = /(verify|tap|edit)\s+(button|view|textfield|label)\s+"([^"]+)"/;
-            const conditionTypePattern = /\b(is not selected|is selected|is not exist|is exist|contains value|with text)\b/;
+            const conditionTypePattern = /\b(not selected|selected|not exists|exists|contains|with)\b/;
             const subscenarioCallPattern = /subscenario\s+"([^"]+)"/;
 
             // Combine all patterns into an array
@@ -53,33 +53,13 @@ let hoverDisposable = vscode.languages.registerHoverProvider('melina',
 let completionDisposable = vscode.languages.registerCompletionItemProvider({ scheme: 'file', language: 'melina' },
     {
         provideCompletionItems(document, position, token, context) {
-            const suite = new vscode.CompletionItem('suite', vscode.CompletionItemKind.Keyword);
-            const scenario = new vscode.CompletionItem('scenario', vscode.CompletionItemKind.Keyword);
-            const subscenario = new vscode.CompletionItem('subscenario', vscode.CompletionItemKind.Keyword);
-            const arguments = new vscode.CompletionItem('arguments', vscode.CompletionItemKind.Keyword);
-            const end = new vscode.CompletionItem('end', vscode.CompletionItemKind.Keyword);
-            const to = new vscode.CompletionItem('to', vscode.CompletionItemKind.Keyword);
-            const verify = new vscode.CompletionItem('verify', vscode.CompletionItemKind.Keyword);
-            const tap = new vscode.CompletionItem('tap', vscode.CompletionItemKind.Keyword);
-            const edit = new vscode.CompletionItem('edit', vscode.CompletionItemKind.Keyword);
-            const button = new vscode.CompletionItem('button', vscode.CompletionItemKind.Keyword);
-            const view = new vscode.CompletionItem('view', vscode.CompletionItemKind.Keyword);
-            const textfield = new vscode.CompletionItem('textfield', vscode.CompletionItemKind.Keyword);
-            const label = new vscode.CompletionItem('label', vscode.CompletionItemKind.Keyword);
-            const isNotSelected = new vscode.CompletionItem('is not selected', vscode.CompletionItemKind.Keyword);
-            const isSelected = new vscode.CompletionItem('is selected', vscode.CompletionItemKind.Keyword);
-            const isNotExist = new vscode.CompletionItem('is not exist', vscode.CompletionItemKind.Keyword);
-            const isExist = new vscode.CompletionItem('is exist', vscode.CompletionItemKind.Keyword);
-            const containsValue = new vscode.CompletionItem('contains value', vscode.CompletionItemKind.Keyword);
-            const withText = new vscode.CompletionItem('with text', vscode.CompletionItemKind.Keyword);
-            const json = new vscode.CompletionItem('json', vscode.CompletionItemKind.Keyword);
-            const file = new vscode.CompletionItem('file', vscode.CompletionItemKind.Keyword);
-
-            return [
-                suite, scenario, subscenario, arguments, end, to, verify, tap, edit,
-                button, view, textfield, label, isNotSelected, isSelected,
-                isNotExist, isExist, containsValue, withText, json, file
-            ];
+            const keywords = [
+                'suite', 'scenario', 'subscenario', 'arguments', 'end', 'to', 'verify', 'tap', 'edit',
+                'button', 'view', 'textfield', 'label', 'not selected', 'selected', 
+                'not exists', 'exists', 'contains', 'with', 'json', 'file'
+              ];
+              
+              return keywords.map(keyword => new vscode.CompletionItem(keyword, vscode.CompletionItemKind.Keyword));
         }
     }
 );
@@ -91,21 +71,6 @@ let generateDisposable = vscode.commands.registerCommand(generateCommand, async 
     let buildController = new BuildController();
 
     buildController.generate()
-        .then(result => {
-            output.show()
-            output.append(result);
-        })
-        .catch(error => {
-            output.show()
-            output.append(error);
-        });
-});
-
-let runCommand = 'extension.run';
-let runDisposable = vscode.commands.registerCommand(runCommand, async function () {
-    let buildController = new BuildController();
-
-    buildController.run()
         .then(result => {
             output.show()
             output.append(result);
@@ -130,6 +95,36 @@ let templateDisposable = vscode.commands.registerCommand(templateCommand, async 
     })
 });
 
+let runCommand = 'extension.run';
+let runDisposable = vscode.commands.registerCommand(runCommand, async function () {
+    let buildController = new BuildController();
+
+    buildController.run()
+        .then(result => {
+            output.show()
+            output.append(result);
+        })
+        .catch(error => {
+            output.show()
+            output.append(error);
+        });
+});
+
+let buildAndRunCommand = 'extension.build-and-run';
+let buildAndRunDisposable = vscode.commands.registerCommand(buildAndRunCommand, async function () {
+    let buildController = new BuildController();
+
+    buildController.buildAndRun()
+        .then(result => {
+            output.show()
+            output.append(result);
+        })
+        .catch(error => {
+            output.show()
+            output.append(error);
+        });
+});
+
 function activate(context) {
     let generateItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right, 100);
     generateItem.command = generateCommand;
@@ -137,17 +132,23 @@ function activate(context) {
     generateItem.tooltip = 'Generate test';
     generateItem.show();
 
-    // let runItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right, 100);
-    // runItem.command = runCommand;
-    // runItem.text = `$(play)`;
-    // runItem.tooltip = 'Run test';
-    // runItem.show();
-
     let templateItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right, 100);
     templateItem.command = templateCommand;
     templateItem.text = `$(file-add)`;
     templateItem.tooltip = 'Create template';
     templateItem.show();
+
+    let runItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right, 100);
+    runItem.command = runCommand;
+    runItem.text = `$(run)`;
+    runItem.tooltip = 'Run test';
+    runItem.show();
+
+    let buildAndRunItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right, 100);
+    buildAndRunItem.command = buildAndRunCommand;
+    buildAndRunItem.text = `$(debug-rerun)`;
+    buildAndRunItem.tooltip = 'Build and run test';
+    buildAndRunItem.show();
 
     context.subscriptions.push(hoverDisposable)
     context.subscriptions.push(completionDisposable)
@@ -155,6 +156,7 @@ function activate(context) {
     context.subscriptions.push(generateDisposable)
     context.subscriptions.push(templateDisposable)
     context.subscriptions.push(formatCodeDisposable)
+    context.subscriptions.push(buildAndRunDisposable)
 }
 
 function deactivate() {
