@@ -31,7 +31,7 @@
                 },
                 {
                     "name": "entity.other.attribute-name.melina",
-                    "match": "\\b(is exist|is not exist|is selected|is not selected|contains value|with text)\\b"
+                    "match": "\\b(exists|not exists|selected|not selected|contains|with)\\b"
                 }
             ]
         },

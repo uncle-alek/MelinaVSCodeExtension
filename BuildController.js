@@ -24,7 +24,8 @@ class BuildController {
     }
 
     async run() {
-        const { stdout, stderr } = await new MelinaCompiler(this.fm.pathToMelina).compileSwiftTeCode(this.fm.currentFilePath());
+        const compiler = new MelinaCompiler(this.fm.pathToMelina)
+        const { stdout, stderr } = await compiler.compileSwiftTeCode(this.fm.currentFilePath(), this.fm.compiledFilePath());
         let stdoutData = '';
         for await (const chunk of stdout) {
             stdoutData += chunk;
@@ -36,10 +37,29 @@ class BuildController {
         if (stderrData) {
             throw new Error(stderrData);
         }
-        // await new XCTestPlan(this.fm.testPlanFilePath).updateConfiguration(this.fm.compiledFilePath());
+        await new XCTestPlan(this.fm.testPlanFilePath).updateConfiguration(this.fm.compiledFilePath());
+        new XCodeBuild(this.fm.projectFilePath).testWithoutBuilding();
 
-        // new XCodeBuild(this.fm.projectFilePath).test();
-        // completion(null, 'Running UITests');
+        return stdoutData;
+    }
+
+    async buildAndRun() {
+        const compiler = new MelinaCompiler(this.fm.pathToMelina)
+        const { stdout, stderr } = await compiler.compileSwiftTeCode(this.fm.currentFilePath(), this.fm.compiledFilePath());
+        let stdoutData = '';
+        for await (const chunk of stdout) {
+            stdoutData += chunk;
+        }
+        let stderrData = '';
+        for await (const chunk of stderr) {
+            stderrData += chunk;
+        }
+        if (stderrData) {
+            throw new Error(stderrData);
+        }
+        await new XCTestPlan(this.fm.testPlanFilePath).updateConfiguration(this.fm.compiledFilePath());
+        new XCodeBuild(this.fm.projectFilePath).test();
+
         return stdoutData;
     }
 }

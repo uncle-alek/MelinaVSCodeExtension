@@ -2,8 +2,8 @@ const { exec } = require('child_process');
 
 class XCodeBuild {
 
-    simulatorName = `iPhone 14 pro`
-    OS = `16.4`
+    simulatorName = `iPhone 15`
+    OS = `17.0.1`
 
     constructor(projectFilePath) {
         this.projectFilePath = projectFilePath;

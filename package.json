@@ -28,10 +28,16 @@
       "path": "./syntaxes/melina.tmLanguage.json"
     }],
     "keybindings": [{
-          "command": "extension.run",
-          "mac": "cmd+r",
-          "when": "editorTextFocus",
-          "title": "Run test"
+        "command": "extension.build-and-run",
+        "mac": "shift+cmd+r",
+        "when": "editorTextFocus",
+        "title": "Build and run test"
+      },
+      {
+        "command": "extension.run",
+        "mac": "cmd+r",
+        "when": "editorTextFocus",
+        "title": "Run test"
       },
       {
         "command": "extension.generate",
